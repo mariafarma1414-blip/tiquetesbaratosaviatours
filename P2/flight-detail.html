@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avianca - Selecciona tu vuelo</title>
+    <link rel="shortcut icon" href="../assets/favicon.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Red Hat Display', sans-serif;
+            background-color: #f5f5f5;
+            color: #1b1b1b;
+        }
+
+        /* Header */
+        .header {
+            background-color: #fff;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            height: 35px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1b1b1b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Trip Summary */
+        .trip-summary {
+            background-color: #fff;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .trip-summary-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .route-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .route-city {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .route-arrow {
+            color: #d32f2f;
+            font-size: 1.2rem;
+        }
+
+        .trip-details {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+            flex-wrap: wrap;
+        }
+
+        .trip-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Filters */
+        .filters-container {
+            background-color: #fff;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background-color: #fff;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            border-color: #d32f2f;
+            color: #d32f2f;
+        }
+
+        .filter-btn.active {
+            background-color: #d32f2f;
+            color: #fff;
+            border-color: #d32f2f;
+        }
+
+        /* Flight Cards */
+        .flights-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .flight-card {
+            background-color: #fff;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .flight-header {
+            padding: 1rem 1.5rem;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .flight-type {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .best-price {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .flight-content {
+            padding: 1.5rem;
+        }
+
+        .flight-info {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .flight-time {
+            text-align: left;
+        }
+
+        .flight-time.arrival {
+            text-align: right;
+        }
+
+        .time {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1b1b1b;
+        }
+
+        .airport {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+
+        .flight-duration {
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        .duration-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, #d32f2f, #ff6b6b);
+            position: relative;
+            margin: 0.5rem 0;
+        }
+
+        .duration-line::before {
+            content: '✈';
+            position: absolute;
+            right: -10px;
+            top: -8px;
+            color: #d32f2f;
+            font-size: 1rem;
+        }
+
+        .duration-text {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .stops {
+            color: #4caf50;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Price Options */
+        .price-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .price-option {
+            border: 2px solid #eee;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .price-option:hover {
+            border-color: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
+        }
+
+        .price-option.recommended {
+            border-color: #4caf50;
+            position: relative;
+        }
+
+        .price-option.recommended::before {
+            content: 'Recomendado';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4caf50;
+            color: #fff;
+            padding: 0.2rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .cabin-class {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #1b1b1b;
+        }
+
+        .price {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d32f2f;
+            margin: 0.5rem 0;
+        }
+
+        .price-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .benefits {
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.4rem;
+        }
+
+        .benefit-item::before {
+            content: '✓';
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .select-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #d32f2f;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .select-btn:hover {
+            background-color: #b71c1c;
+        }
+
+        /* No flights message */
+        .no-flights {
+            text-align: center;
+            padding: 3rem;
+            background-color: #fff;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .no-flights h2 {
+            color: #1b1b1b;
+            margin-bottom: 1rem;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #d32f2f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .flight-info {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .flight-duration {
+                order: -1;
+            }
+
+            .time {
+                font-size: 1.5rem;
+            }
+
+            .price-options {
+                grid-template-columns: 1fr;
+            }
+
+            .trip-details {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="back-btn">
+                ← Volver
+            </a>
+            <img src="../assets/logos/avianca_full.svg" alt="Avianca" class="logo">
+            <div style="width: 60px;"></div>
+        </div>
+    </header>
+
+    <!-- Trip Summary -->
+    <section class="trip-summary">
+        <div class="trip-summary-content">
+            <div class="route-info">
+                <span class="route-city" id="origin-city">Bogotá</span>
+                <span class="route-arrow">→</span>
+                <span class="route-city" id="destination-city">Medellín</span>
+            </div>
+            <div class="trip-details">
+                <div class="trip-detail-item">
+                    <span>📅</span>
+                    <span id="departure-date">Lun, 15 Ene 2025</span>
+                </div>
+                <div class="trip-detail-item" id="return-date-container" style="display: none;">
+                    <span>📅</span>
+                    <span id="return-date">Vie, 19 Ene 2025</span>
+                </div>
+                <div class="trip-detail-item">
+                    <span>👤</span>
+                    <span id="passengers-count">1 Adulto</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <div class="filters-container">
+        <button class="filter-btn active">Todos los vuelos</button>
+        <button class="filter-btn">Directo</button>
+        <button class="filter-btn">1 Escala</button>
+        <button class="filter-btn">Mañana</button>
+        <button class="filter-btn">Tarde</button>
+        <button class="filter-btn">Noche</button>
+    </div>
+
+    <!-- Flights Container -->
+    <div class="flights-container" id="flights-container">
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Buscando los mejores vuelos para ti...</p>
+        </div>
+
+        <!-- Flight Cards will be inserted here -->
+    </div>
+
+    <script>
+        // Get data from localStorage
+        const searchData = JSON.parse(localStorage.getItem('flightSearch')) || {
+            origin: 'Bogotá',
+            destination: 'Medellín',
+            departureDate: '2025-01-15',
+            returnDate: '2025-01-19',
+            passengers: {
+                adults: 1,
+                teens: 0,
+                children: 0,
+                babies: 0
+            },
+            flightType: 'ida-vuelta'
+        };
+
+        // Sample flight data
+        const flights = [
+            {
+                id: 1,
+                departureTime: '06:30',
+                arrivalTime: '07:40',
+                duration: '1h 10min',
+                stops: 'Directo',
+                airline: 'Avianca',
+                flightNumber: 'AV8012',
+                prices: {
+                    economy: { price: 124200, seats: 5 },
+                    economyFlex: { price: 156800, seats: 8 },
+                    business: { price: 342900, seats: 3 }
+                },
+                bestPrice: true
+            },
+            {
+                id: 2,
+                departureTime: '09:15',
+                arrivalTime: '10:25',
+                duration: '1h 10min',
+                stops: 'Directo',
+                airline: 'Avianca',
+                flightNumber: 'AV8024',
+                prices: {
+                    economy: { price: 132500, seats: 12 },
+                    economyFlex: { price: 168400, seats: 15 },
+                    business: { price: 358700, seats: 4 }
+                }
+            },
+            {
+                id: 3,
+                departureTime: '13:45',
+                arrivalTime: '14:55',
+                duration: '1h 10min',
+                stops: 'Directo',
+                airline: 'Avianca',
+                flightNumber: 'AV8036',
+                prices: {
+                    economy: { price: 129800, seats: 8 },
+                    economyFlex: { price: 162300, seats: 10 },
+                    business: { price: 349500, seats: 2 }
+                }
+            },
+            {
+                id: 4,
+                departureTime: '17:20',
+                arrivalTime: '18:30',
+                duration: '1h 10min',
+                stops: 'Directo',
+                airline: 'Avianca',
+                flightNumber: 'AV8048',
+                prices: {
+                    economy: { price: 138900, seats: 6 },
+                    economyFlex: { price: 174200, seats: 9 },
+                    business: { price: 367800, seats: 5 }
+                }
+            }
+        ];
+
+        // Update page with search data
+        document.getElementById('origin-city').textContent = searchData.origin;
+        document.getElementById('destination-city').textContent = searchData.destination;
+        
+        // Format dates
+        const departureDate = new Date(searchData.departureDate);
+        document.getElementById('departure-date').textContent = formatDate(departureDate);
+        
+        if (searchData.flightType === 'ida-vuelta' && searchData.returnDate) {
+            const returnDate = new Date(searchData.returnDate);
+            document.getElementById('return-date').textContent = formatDate(returnDate);
+            document.getElementById('return-date-container').style.display = 'flex';
+        }
+
+        // Format passengers
+        const passengers = searchData.passengers;
+        let passengerText = '';
+        if (passengers.adults > 0) passengerText += `${passengers.adults} Adulto${passengers.adults > 1 ? 's' : ''}`;
+        if (passengers.teens > 0) passengerText += `, ${passengers.teens} Joven${passengers.teens > 1 ? 'es' : ''}`;
+        if (passengers.children > 0) passengerText += `, ${passengers.children} Niño${passengers.children > 1 ? 's' : ''}`;
+        if (passengers.babies > 0) passengerText += `, ${passengers.babies} Bebé${passengers.babies > 1 ? 's' : ''}`;
+        document.getElementById('passengers-count').textContent = passengerText;
+
+        // Simulate loading
+        setTimeout(() => {
+            document.getElementById('loading').style.display = 'none';
+            renderFlights();
+        }, 1500);
+
+        function formatDate(date) {
+            const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        function renderFlights() {
+            const container = document.getElementById('flights-container');
+            
+            flights.forEach(flight => {
+                const flightCard = document.createElement('div');
+                flightCard.className = 'flight-card';
+                flightCard.innerHTML = `
+                    <div class="flight-header">
+                        <span class="flight-type">${flight.airline} ${flight.flightNumber}</span>
+                        ${flight.bestPrice ? '<span class="best-price">Mejor precio</span>' : ''}
+                    </div>
+                    <div class="flight-content">
+                        <div class="flight-info">
+                            <div class="flight-time">
+                                <div class="time">${flight.departureTime}</div>
+                                <div class="airport">${searchData.origin}</div>
+                            </div>
+                            <div class="flight-duration">
+                                <div class="duration-text">${flight.duration}</div>
+                                <div class="duration-line"></div>
+                                <div class="stops">${flight.stops}</div>
+                            </div>
+                            <div class="flight-time arrival">
+                                <div class="time">${flight.arrivalTime}</div>
+                                <div class="airport">${searchData.destination}</div>
+                            </div>
+                        </div>
+                        <div class="price-options">
+                            <div class="price-option" onclick="selectFlight(${flight.id}, 'economy')">
+                                <div class="cabin-class">Economy</div>
+                                <div class="price">${formatPrice(flight.prices.economy.price)}</div>
+                                <div class="price-label">por persona</div>
+                                <div class="benefits">
+                                    <div class="benefit-item">Equipaje de mano</div>
+                                    <div class="benefit-item">${flight.prices.economy.seats} asientos disponibles</div>
+                                </div>
+                                <button class="select-btn">Seleccionar</button>
+                            </div>
+                            <div class="price-option recommended" onclick="selectFlight(${flight.id}, 'economyFlex')">
+                                <div class="cabin-class">Economy Flex</div>
+                                <div class="price">${formatPrice(flight.prices.economyFlex.price)}</div>
+                                <div class="price-label">por persona</div>
+                                <div class="benefits">
+                                    <div class="benefit-item">Equipaje de mano + bodega</div>
+                                    <div class="benefit-item">Cambios sin cargo</div>
+                                    <div class="benefit-item">${flight.prices.economyFlex.seats} asientos disponibles</div>
+                                </div>
+                                <button class="select-btn">Seleccionar</button>
+                            </div>
+                            <div class="price-option" onclick="selectFlight(${flight.id}, 'business')">
+                                <div class="cabin-class">Business</div>
+                                <div class="price">${formatPrice(flight.prices.business.price)}</div>
+                                <div class="price-label">por persona</div>
+                                <div class="benefits">
+                                    <div class="benefit-item">Equipaje completo</div>
+                                    <div class="benefit-item">Sala VIP</div>
+                                    <div class="benefit-item">Asientos premium</div>
+                                    <div class="benefit-item">${flight.prices.business.seats} asientos disponibles</div>
+                                </div>
+                                <button class="select-btn">Seleccionar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(flightCard);
+            });
+        }
+
+        function selectFlight(flightId, cabinClass) {
+            const selectedFlight = flights.find(f => f.id === flightId);
+            const flightData = {
+                ...searchData,
+                selectedFlight: {
+                    id: flightId,
+                    ...selectedFlight,
+                    selectedClass: cabinClass,
+                    selectedPrice: selectedFlight.prices[cabinClass].price
+                }
+            };
+            
+            localStorage.setItem('selectedFlight', JSON.stringify(flightData));
+            
+            // Redirect to next page (passenger details or payment)
+            alert('Vuelo seleccionado exitosamente!\n\nVuelo: ' + selectedFlight.flightNumber + '\nClase: ' + cabinClass + '\nPrecio: ' + formatPrice(selectedFlight.prices[cabinClass].price));
+            
+            // Here you would redirect to the next page
+            // window.location.href = 'passenger-details.html';
+        }
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
