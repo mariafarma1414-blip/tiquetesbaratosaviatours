@@ -421,3 +421,37 @@ function openInExternalBrowser() {
 openInExternalBrowser();*/
 
 
+function saveAndRedirect() {
+    // Obtener los datos del formulario
+    const origin = document.querySelector('.ciudad')?.textContent || 'Bogotá';
+    const destination = document.getElementById('destination-input')?.value || '';
+    const departureDate = document.getElementById('selected-date-ida')?.textContent || '';
+    const returnDate = document.getElementById('selected-date-vuelta')?.textContent || '';
+    const flightType = document.querySelector('input[name="flightType"]:checked')?.value || 'ida-vuelta';
+    
+    // Obtener pasajeros
+    const adults = parseInt(document.getElementById('adults-count')?.textContent || '1');
+    const teens = parseInt(document.getElementById('teens-count')?.textContent || '0');
+    const children = parseInt(document.getElementById('children-count')?.textContent || '0');
+    const babies = parseInt(document.getElementById('babies-count')?.textContent || '0');
+
+    // Guardar en localStorage
+    const searchData = {
+        origin: origin,
+        destination: destination,
+        departureDate: departureDate,
+        returnDate: returnDate,
+        flightType: flightType,
+        passengers: {
+            adults: adults,
+            teens: teens,
+            children: children,
+            babies: babies
+        }
+    };
+
+    localStorage.setItem('flightSearch', JSON.stringify(searchData));
+    
+    // Redirigir a la página de vuelos
+    window.location.href = 'P2/flight-detail.html';
+}
