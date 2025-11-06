@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" /> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avianca - Selecciona tu vuelo</title>
@@ -49,6 +50,7 @@
             text-decoration: none;
             font-size: 0.95rem;
             font-weight: 500;
+            cursor: pointer;
         }
 
         /* Trip Summary */
@@ -113,6 +115,7 @@
             white-space: nowrap;
             font-size: 0.9rem;
             transition: all 0.3s;
+            font-family: 'Red Hat Display', sans-serif;
         }
 
         .filter-btn:hover {
@@ -130,7 +133,7 @@
         .flights-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 1rem;
+            padding: 0 1rem 2rem;
         }
 
         .flight-card {
@@ -321,24 +324,11 @@
             cursor: pointer;
             margin-top: 1rem;
             transition: background-color 0.3s;
+            font-family: 'Red Hat Display', sans-serif;
         }
 
         .select-btn:hover {
             background-color: #b71c1c;
-        }
-
-        /* No flights message */
-        .no-flights {
-            text-align: center;
-            padding: 3rem;
-            background-color: #fff;
-            border-radius: 8px;
-            margin-top: 2rem;
-        }
-
-        .no-flights h2 {
-            color: #1b1b1b;
-            margin-bottom: 1rem;
         }
 
         /* Loading */
@@ -384,6 +374,10 @@
             .trip-details {
                 font-size: 0.85rem;
             }
+
+            .route-city {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -391,10 +385,10 @@
     <!-- Header -->
     <header class="header">
         <div class="header-content">
-            <a href="../index.html" class="back-btn">
+            <a onclick="goBack()" class="back-btn">
                 ← Volver
             </a>
-            <img src="../assets/logos/avianca_full.svg" alt="Avianca" class="logo">
+            <img src="../assets/logos/avianca_full.svg" alt="Avianca" class="logo" onerror="this.style.display='none'">
             <div style="width: 60px;"></div>
         </div>
     </header>
@@ -441,17 +435,19 @@
             <div class="loading-spinner"></div>
             <p>Buscando los mejores vuelos para ti...</p>
         </div>
-
-        <!-- Flight Cards will be inserted here -->
     </div>
 
     <script>
+        function goBack() {
+            window.history.back();
+        }
+
         // Get data from localStorage
         const searchData = JSON.parse(localStorage.getItem('flightSearch')) || {
             origin: 'Bogotá',
             destination: 'Medellín',
-            departureDate: '2025-01-15',
-            returnDate: '2025-01-19',
+            departureDate: new Date().toISOString().split('T')[0],
+            returnDate: null,
             passengers: {
                 adults: 1,
                 teens: 0,
@@ -527,13 +523,17 @@
         document.getElementById('destination-city').textContent = searchData.destination;
         
         // Format dates
-        const departureDate = new Date(searchData.departureDate);
-        document.getElementById('departure-date').textContent = formatDate(departureDate);
-        
-        if (searchData.flightType === 'ida-vuelta' && searchData.returnDate) {
-            const returnDate = new Date(searchData.returnDate);
-            document.getElementById('return-date').textContent = formatDate(returnDate);
-            document.getElementById('return-date-container').style.display = 'flex';
+        try {
+            const departureDate = new Date(searchData.departureDate);
+            document.getElementById('departure-date').textContent = formatDate(departureDate);
+            
+            if (searchData.flightType === 'ida-vuelta' && searchData.returnDate) {
+                const returnDate = new Date(searchData.returnDate);
+                document.getElementById('return-date').textContent = formatDate(returnDate);
+                document.getElementById('return-date-container').style.display = 'flex';
+            }
+        } catch (e) {
+            console.log('Error formatting dates');
         }
 
         // Format passengers
@@ -543,7 +543,7 @@
         if (passengers.teens > 0) passengerText += `, ${passengers.teens} Joven${passengers.teens > 1 ? 'es' : ''}`;
         if (passengers.children > 0) passengerText += `, ${passengers.children} Niño${passengers.children > 1 ? 's' : ''}`;
         if (passengers.babies > 0) passengerText += `, ${passengers.babies} Bebé${passengers.babies > 1 ? 's' : ''}`;
-        document.getElementById('passengers-count').textContent = passengerText;
+        document.getElementById('passengers-count').textContent = passengerText || '1 Adulto';
 
         // Simulate loading
         setTimeout(() => {
@@ -647,10 +647,9 @@
             
             localStorage.setItem('selectedFlight', JSON.stringify(flightData));
             
-            // Redirect to next page (passenger details or payment)
-            alert('Vuelo seleccionado exitosamente!\n\nVuelo: ' + selectedFlight.flightNumber + '\nClase: ' + cabinClass + '\nPrecio: ' + formatPrice(selectedFlight.prices[cabinClass].price));
+            alert('¡Vuelo seleccionado exitosamente!\n\nVuelo: ' + selectedFlight.flightNumber + '\nClase: ' + cabinClass + '\nPrecio: ' + formatPrice(selectedFlight.prices[cabinClass].price));
             
-            // Here you would redirect to the next page
+            // Aquí puedes redirigir a la siguiente página
             // window.location.href = 'passenger-details.html';
         }
 
