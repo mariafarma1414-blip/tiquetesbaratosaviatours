@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8" /> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avianca - Selecciona tu vuelo</title>
@@ -18,9 +17,9 @@
             font-family: 'Red Hat Display', sans-serif;
             background-color: #f5f5f5;
             color: #1b1b1b;
+            min-height: 100vh;
         }
 
-        /* Header */
         .header {
             background-color: #fff;
             padding: 1rem 1.5rem;
@@ -38,10 +37,6 @@
             margin: 0 auto;
         }
 
-        .logo {
-            height: 35px;
-        }
-
         .back-btn {
             display: flex;
             align-items: center;
@@ -53,16 +48,14 @@
             cursor: pointer;
         }
 
-        /* Trip Summary */
+        .logo {
+            height: 35px;
+        }
+
         .trip-summary {
             background-color: #fff;
             padding: 1.5rem;
             margin-bottom: 1rem;
-        }
-
-        .trip-summary-content {
-            max-width: 1200px;
-            margin: 0 auto;
         }
 
         .route-info {
@@ -90,13 +83,6 @@
             flex-wrap: wrap;
         }
 
-        .trip-detail-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Filters */
         .filters-container {
             background-color: #fff;
             padding: 1rem 1.5rem;
@@ -115,12 +101,6 @@
             white-space: nowrap;
             font-size: 0.9rem;
             transition: all 0.3s;
-            font-family: 'Red Hat Display', sans-serif;
-        }
-
-        .filter-btn:hover {
-            border-color: #d32f2f;
-            color: #d32f2f;
         }
 
         .filter-btn.active {
@@ -129,7 +109,6 @@
             border-color: #d32f2f;
         }
 
-        /* Flight Cards */
         .flights-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -153,11 +132,6 @@
             align-items: center;
         }
 
-        .flight-type {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
         .best-price {
             background-color: #4caf50;
             color: #fff;
@@ -179,18 +153,9 @@
             margin-bottom: 1.5rem;
         }
 
-        .flight-time {
-            text-align: left;
-        }
-
-        .flight-time.arrival {
-            text-align: right;
-        }
-
         .time {
             font-size: 1.8rem;
             font-weight: bold;
-            color: #1b1b1b;
         }
 
         .airport {
@@ -201,7 +166,6 @@
 
         .flight-duration {
             text-align: center;
-            padding: 0 1rem;
         }
 
         .duration-line {
@@ -218,12 +182,6 @@
             right: -10px;
             top: -8px;
             color: #d32f2f;
-            font-size: 1rem;
-        }
-
-        .duration-text {
-            font-size: 0.85rem;
-            color: #666;
         }
 
         .stops {
@@ -232,7 +190,6 @@
             font-weight: 600;
         }
 
-        /* Price Options */
         .price-options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -251,33 +208,23 @@
         .price-option:hover {
             border-color: #d32f2f;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
-        }
-
-        .price-option.recommended {
-            border-color: #4caf50;
-            position: relative;
         }
 
         .price-option.recommended::before {
             content: 'Recomendado';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
+            display: block;
             background-color: #4caf50;
             color: #fff;
             padding: 0.2rem 0.8rem;
             border-radius: 15px;
             font-size: 0.75rem;
-            font-weight: 600;
+            margin-bottom: 0.5rem;
         }
 
         .cabin-class {
             font-weight: 600;
             font-size: 1rem;
             margin-bottom: 0.5rem;
-            color: #1b1b1b;
         }
 
         .price {
@@ -285,11 +232,6 @@
             font-weight: bold;
             color: #d32f2f;
             margin: 0.5rem 0;
-        }
-
-        .price-label {
-            font-size: 0.8rem;
-            color: #666;
         }
 
         .benefits {
@@ -320,18 +262,10 @@
             border: none;
             border-radius: 25px;
             font-weight: 600;
-            font-size: 1rem;
             cursor: pointer;
             margin-top: 1rem;
-            transition: background-color 0.3s;
-            font-family: 'Red Hat Display', sans-serif;
         }
 
-        .select-btn:hover {
-            background-color: #b71c1c;
-        }
-
-        /* Loading */
         .loading {
             text-align: center;
             padding: 3rem;
@@ -352,313 +286,126 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .flight-info {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
             }
-
-            .flight-duration {
-                order: -1;
-            }
-
-            .time {
-                font-size: 1.5rem;
-            }
-
             .price-options {
                 grid-template-columns: 1fr;
-            }
-
-            .trip-details {
-                font-size: 0.85rem;
-            }
-
-            .route-city {
-                font-size: 1.2rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <div class="header-content">
-            <a onclick="goBack()" class="back-btn">
-                ← Volver
-            </a>
-            <img src="../assets/logos/avianca_full.svg" alt="Avianca" class="logo" onerror="this.style.display='none'">
+            <a onclick="history.back()" class="back-btn">← Volver</a>
+            <img src="../assets/logos/avianca_full.svg" alt="Avianca" class="logo">
             <div style="width: 60px;"></div>
         </div>
     </header>
 
-    <!-- Trip Summary -->
     <section class="trip-summary">
-        <div class="trip-summary-content">
-            <div class="route-info">
-                <span class="route-city" id="origin-city">Bogotá</span>
-                <span class="route-arrow">→</span>
-                <span class="route-city" id="destination-city">Medellín</span>
-            </div>
-            <div class="trip-details">
-                <div class="trip-detail-item">
-                    <span>📅</span>
-                    <span id="departure-date">Lun, 15 Ene 2025</span>
-                </div>
-                <div class="trip-detail-item" id="return-date-container" style="display: none;">
-                    <span>📅</span>
-                    <span id="return-date">Vie, 19 Ene 2025</span>
-                </div>
-                <div class="trip-detail-item">
-                    <span>👤</span>
-                    <span id="passengers-count">1 Adulto</span>
-                </div>
-            </div>
+        <div class="route-info">
+            <span class="route-city" id="origin-city">Bogotá</span>
+            <span class="route-arrow">→</span>
+            <span class="route-city" id="destination-city">Medellín</span>
+        </div>
+        <div class="trip-details">
+            <div>📅 <span id="departure-date"></span></div>
+            <div id="return-container" style="display:none;">📅 <span id="return-date"></span></div>
+            <div>👤 <span id="passengers"></span></div>
         </div>
     </section>
 
-    <!-- Filters -->
     <div class="filters-container">
-        <button class="filter-btn active">Todos los vuelos</button>
+        <button class="filter-btn active">Todos</button>
         <button class="filter-btn">Directo</button>
-        <button class="filter-btn">1 Escala</button>
         <button class="filter-btn">Mañana</button>
         <button class="filter-btn">Tarde</button>
-        <button class="filter-btn">Noche</button>
     </div>
 
-    <!-- Flights Container -->
     <div class="flights-container" id="flights-container">
-        <!-- Loading -->
-        <div class="loading" id="loading">
+        <div class="loading">
             <div class="loading-spinner"></div>
-            <p>Buscando los mejores vuelos para ti...</p>
+            <p>Buscando vuelos...</p>
         </div>
     </div>
 
     <script>
-        function goBack() {
-            window.history.back();
+        const data = JSON.parse(localStorage.getItem('flightSearch')) || {};
+        
+        document.getElementById('origin-city').textContent = data.origin || 'Bogotá';
+        document.getElementById('destination-city').textContent = data.destination || 'Medellín';
+        document.getElementById('departure-date').textContent = data.departureDate || 'Fecha no seleccionada';
+        
+        if (data.returnDate && data.flightType === 'ida-vuelta') {
+            document.getElementById('return-date').textContent = data.returnDate;
+            document.getElementById('return-container').style.display = 'block';
         }
+        
+        const p = data.passengers || {adults: 1};
+        document.getElementById('passengers').textContent = 
+            `${p.adults || 1} Adulto${(p.adults || 1) > 1 ? 's' : ''}`;
 
-        // Get data from localStorage
-        const searchData = JSON.parse(localStorage.getItem('flightSearch')) || {
-            origin: 'Bogotá',
-            destination: 'Medellín',
-            departureDate: new Date().toISOString().split('T')[0],
-            returnDate: null,
-            passengers: {
-                adults: 1,
-                teens: 0,
-                children: 0,
-                babies: 0
-            },
-            flightType: 'ida-vuelta'
-        };
-
-        // Sample flight data
         const flights = [
-            {
-                id: 1,
-                departureTime: '06:30',
-                arrivalTime: '07:40',
-                duration: '1h 10min',
-                stops: 'Directo',
-                airline: 'Avianca',
-                flightNumber: 'AV8012',
-                prices: {
-                    economy: { price: 124200, seats: 5 },
-                    economyFlex: { price: 156800, seats: 8 },
-                    business: { price: 342900, seats: 3 }
-                },
-                bestPrice: true
-            },
-            {
-                id: 2,
-                departureTime: '09:15',
-                arrivalTime: '10:25',
-                duration: '1h 10min',
-                stops: 'Directo',
-                airline: 'Avianca',
-                flightNumber: 'AV8024',
-                prices: {
-                    economy: { price: 132500, seats: 12 },
-                    economyFlex: { price: 168400, seats: 15 },
-                    business: { price: 358700, seats: 4 }
-                }
-            },
-            {
-                id: 3,
-                departureTime: '13:45',
-                arrivalTime: '14:55',
-                duration: '1h 10min',
-                stops: 'Directo',
-                airline: 'Avianca',
-                flightNumber: 'AV8036',
-                prices: {
-                    economy: { price: 129800, seats: 8 },
-                    economyFlex: { price: 162300, seats: 10 },
-                    business: { price: 349500, seats: 2 }
-                }
-            },
-            {
-                id: 4,
-                departureTime: '17:20',
-                arrivalTime: '18:30',
-                duration: '1h 10min',
-                stops: 'Directo',
-                airline: 'Avianca',
-                flightNumber: 'AV8048',
-                prices: {
-                    economy: { price: 138900, seats: 6 },
-                    economyFlex: { price: 174200, seats: 9 },
-                    business: { price: 367800, seats: 5 }
-                }
-            }
+            {id: 1, time: '06:30-07:40', duration: '1h 10min', price: 124200, best: true},
+            {id: 2, time: '09:15-10:25', duration: '1h 10min', price: 132500},
+            {id: 3, time: '13:45-14:55', duration: '1h 10min', price: 129800},
+            {id: 4, time: '17:20-18:30', duration: '1h 10min', price: 138900}
         ];
 
-        // Update page with search data
-        document.getElementById('origin-city').textContent = searchData.origin;
-        document.getElementById('destination-city').textContent = searchData.destination;
-        
-        // Format dates
-        try {
-            const departureDate = new Date(searchData.departureDate);
-            document.getElementById('departure-date').textContent = formatDate(departureDate);
-            
-            if (searchData.flightType === 'ida-vuelta' && searchData.returnDate) {
-                const returnDate = new Date(searchData.returnDate);
-                document.getElementById('return-date').textContent = formatDate(returnDate);
-                document.getElementById('return-date-container').style.display = 'flex';
-            }
-        } catch (e) {
-            console.log('Error formatting dates');
-        }
-
-        // Format passengers
-        const passengers = searchData.passengers;
-        let passengerText = '';
-        if (passengers.adults > 0) passengerText += `${passengers.adults} Adulto${passengers.adults > 1 ? 's' : ''}`;
-        if (passengers.teens > 0) passengerText += `, ${passengers.teens} Joven${passengers.teens > 1 ? 'es' : ''}`;
-        if (passengers.children > 0) passengerText += `, ${passengers.children} Niño${passengers.children > 1 ? 's' : ''}`;
-        if (passengers.babies > 0) passengerText += `, ${passengers.babies} Bebé${passengers.babies > 1 ? 's' : ''}`;
-        document.getElementById('passengers-count').textContent = passengerText || '1 Adulto';
-
-        // Simulate loading
         setTimeout(() => {
-            document.getElementById('loading').style.display = 'none';
-            renderFlights();
-        }, 1500);
-
-        function formatDate(date) {
-            const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-            const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-            return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
-        }
-
-        function formatPrice(price) {
-            return new Intl.NumberFormat('es-CO', {
-                style: 'currency',
-                currency: 'COP',
-                minimumFractionDigits: 0
-            }).format(price);
-        }
-
-        function renderFlights() {
             const container = document.getElementById('flights-container');
+            container.innerHTML = '';
             
-            flights.forEach(flight => {
-                const flightCard = document.createElement('div');
-                flightCard.className = 'flight-card';
-                flightCard.innerHTML = `
-                    <div class="flight-header">
-                        <span class="flight-type">${flight.airline} ${flight.flightNumber}</span>
-                        ${flight.bestPrice ? '<span class="best-price">Mejor precio</span>' : ''}
-                    </div>
-                    <div class="flight-content">
-                        <div class="flight-info">
-                            <div class="flight-time">
-                                <div class="time">${flight.departureTime}</div>
-                                <div class="airport">${searchData.origin}</div>
-                            </div>
-                            <div class="flight-duration">
-                                <div class="duration-text">${flight.duration}</div>
-                                <div class="duration-line"></div>
-                                <div class="stops">${flight.stops}</div>
-                            </div>
-                            <div class="flight-time arrival">
-                                <div class="time">${flight.arrivalTime}</div>
-                                <div class="airport">${searchData.destination}</div>
-                            </div>
+            flights.forEach(f => {
+                const [dep, arr] = f.time.split('-');
+                container.innerHTML += `
+                    <div class="flight-card">
+                        <div class="flight-header">
+                            <span>Avianca AV80${f.id}2</span>
+                            ${f.best ? '<span class="best-price">Mejor precio</span>' : ''}
                         </div>
-                        <div class="price-options">
-                            <div class="price-option" onclick="selectFlight(${flight.id}, 'economy')">
-                                <div class="cabin-class">Economy</div>
-                                <div class="price">${formatPrice(flight.prices.economy.price)}</div>
-                                <div class="price-label">por persona</div>
-                                <div class="benefits">
-                                    <div class="benefit-item">Equipaje de mano</div>
-                                    <div class="benefit-item">${flight.prices.economy.seats} asientos disponibles</div>
+                        <div class="flight-content">
+                            <div class="flight-info">
+                                <div><div class="time">${dep}</div><div class="airport">${data.origin}</div></div>
+                                <div class="flight-duration">
+                                    <div>${f.duration}</div>
+                                    <div class="duration-line"></div>
+                                    <div class="stops">Directo</div>
                                 </div>
-                                <button class="select-btn">Seleccionar</button>
+                                <div style="text-align:right"><div class="time">${arr}</div><div class="airport">${data.destination}</div></div>
                             </div>
-                            <div class="price-option recommended" onclick="selectFlight(${flight.id}, 'economyFlex')">
-                                <div class="cabin-class">Economy Flex</div>
-                                <div class="price">${formatPrice(flight.prices.economyFlex.price)}</div>
-                                <div class="price-label">por persona</div>
-                                <div class="benefits">
-                                    <div class="benefit-item">Equipaje de mano + bodega</div>
-                                    <div class="benefit-item">Cambios sin cargo</div>
-                                    <div class="benefit-item">${flight.prices.economyFlex.seats} asientos disponibles</div>
+                            <div class="price-options">
+                                <div class="price-option">
+                                    <div class="cabin-class">Economy</div>
+                                    <div class="price">$${f.price.toLocaleString()}</div>
+                                    <div class="benefits">
+                                        <div class="benefit-item">Equipaje de mano</div>
+                                    </div>
+                                    <button class="select-btn" onclick="alert('Vuelo seleccionado')">Seleccionar</button>
                                 </div>
-                                <button class="select-btn">Seleccionar</button>
-                            </div>
-                            <div class="price-option" onclick="selectFlight(${flight.id}, 'business')">
-                                <div class="cabin-class">Business</div>
-                                <div class="price">${formatPrice(flight.prices.business.price)}</div>
-                                <div class="price-label">por persona</div>
-                                <div class="benefits">
-                                    <div class="benefit-item">Equipaje completo</div>
-                                    <div class="benefit-item">Sala VIP</div>
-                                    <div class="benefit-item">Asientos premium</div>
-                                    <div class="benefit-item">${flight.prices.business.seats} asientos disponibles</div>
+                                <div class="price-option recommended">
+                                    <div class="cabin-class">Economy Flex</div>
+                                    <div class="price">$${(f.price * 1.26).toLocaleString()}</div>
+                                    <div class="benefits">
+                                        <div class="benefit-item">Equipaje + cambios</div>
+                                    </div>
+                                    <button class="select-btn" onclick="alert('Vuelo seleccionado')">Seleccionar</button>
                                 </div>
-                                <button class="select-btn">Seleccionar</button>
                             </div>
                         </div>
                     </div>
                 `;
-                container.appendChild(flightCard);
             });
-        }
+        }, 1500);
 
-        function selectFlight(flightId, cabinClass) {
-            const selectedFlight = flights.find(f => f.id === flightId);
-            const flightData = {
-                ...searchData,
-                selectedFlight: {
-                    id: flightId,
-                    ...selectedFlight,
-                    selectedClass: cabinClass,
-                    selectedPrice: selectedFlight.prices[cabinClass].price
-                }
-            };
-            
-            localStorage.setItem('selectedFlight', JSON.stringify(flightData));
-            
-            alert('¡Vuelo seleccionado exitosamente!\n\nVuelo: ' + selectedFlight.flightNumber + '\nClase: ' + cabinClass + '\nPrecio: ' + formatPrice(selectedFlight.prices[cabinClass].price));
-            
-            // Aquí puedes redirigir a la siguiente página
-            // window.location.href = 'passenger-details.html';
-        }
-
-        // Filter functionality
         document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.onclick = function() {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-            });
+            };
         });
     </script>
 </body>
