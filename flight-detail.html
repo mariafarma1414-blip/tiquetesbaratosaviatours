@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avianca - Vuelos Disponibles</title>
+    <link rel="shortcut icon" href="assets/favicon.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Red Hat Display', sans-serif; background: #f5f5f5; color: #1b1b1b; }
+        .header { background: #fff; padding: 1rem 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .header-content { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; }
+        .back-btn { color: #1b1b1b; text-decoration: none; font-weight: 500; cursor: pointer; }
+        .logo { height: 35px; }
+        .trip-summary { background: #fff; padding: 1.5rem; margin-bottom: 1rem; }
+        .route-info { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .route-city { font-size: 1.5rem; font-weight: bold; }
+        .route-arrow { color: #d32f2f; font-size: 1.2rem; }
+        .trip-details { display: flex; gap: 2rem; font-size: 0.9rem; color: #666; flex-wrap: wrap; }
+        .flights-container { max-width: 1200px; margin: 0 auto; padding: 0 1rem 2rem; }
+        .flight-card { background: #fff; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 1.5rem; }
+        .flight-header { display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
+        .best-price { background: #4caf50; color: #fff; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600; }
+        .flight-info { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; margin-bottom: 1.5rem; }
+        .time { font-size: 1.8rem; font-weight: bold; }
+        .airport { font-size: 0.9rem; color: #666; margin-top: 0.3rem; }
+        .flight-duration { text-align: center; }
+        .duration-line { width: 100%; height: 2px; background: linear-gradient(to right, #d32f2f, #ff6b6b); position: relative; margin: 0.5rem 0; }
+        .duration-line::before { content: '✈'; position: absolute; right: -10px; top: -8px; color: #d32f2f; }
+        .stops { color: #4caf50; font-size: 0.85rem; font-weight: 600; }
+        .price-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .price-option { border: 2px solid #eee; border-radius: 8px; padding: 1rem; text-align: center; transition: all 0.3s; }
+        .price-option:hover { border-color: #d32f2f; transform: translateY(-2px); }
+        .cabin-class { font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem; }
+        .price { font-size: 1.8rem; font-weight: bold; color: #d32f2f; margin: 0.5rem 0; }
+        .select-btn { width: 100%; padding: 0.8rem; background: #d32f2f; color: #fff; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .loading { text-align: center; padding: 3rem; }
+        .loading-spinner { width: 50px; height: 50px; border: 4px solid #f3f3f3; border-top: 4px solid #d32f2f; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (max-width: 768px) { .flight-info, .price-options { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a onclick="history.back()" class="back-btn">← Volver</a>
+            <img src="assets/logos/avianca_full.svg" alt="Avianca" class="logo" onerror="this.style.display='none'">
+            <div style="width: 60px;"></div>
+        </div>
+    </header>
+
+    <section class="trip-summary">
+        <div class="route-info">
+            <span class="route-city" id="origin-city">Bogotá</span>
+            <span class="route-arrow">→</span>
+            <span class="route-city" id="destination-city">Medellín</span>
+        </div>
+        <div class="trip-details">
+            <div>📅 <span id="departure-date">-</span></div>
+            <div id="return-container" style="display:none;">📅 <span id="return-date">-</span></div>
+            <div>👤 <span id="passengers">1 Adulto</span></div>
+        </div>
+    </section>
+
+    <div class="flights-container" id="flights-container">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Buscando los mejores vuelos...</p>
+        </div>
+    </div>
+
+    <script>
+        const data = JSON.parse(localStorage.getItem('flightSearch')) || {};
+        console.log('Datos recibidos:', data);
+        
+        document.getElementById('origin-city').textContent = data.origin || 'Bogotá';
+        document.getElementById('destination-city').textContent = data.destination || 'Destino';
+        document.getElementById('departure-date').textContent = data.departureDate || '-';
+        
+        if (data.returnDate && data.flightType === 'ida-vuelta') {
+            document.getElementById('return-date').textContent = data.returnDate;
+            document.getElementById('return-container').style.display = 'block';
+        }
+        
+        const p = data.passengers || {adults: 1};
+        document.getElementById('passengers').textContent = `${p.adults || 1} Adulto${(p.adults || 1) > 1 ? 's' : ''}`;
+
+        const flights = [
+            {id: 1, dep: '06:30', arr: '07:40', dur: '1h 10min', price: 124200, best: true},
+            {id: 2, dep: '09:15', arr: '10:25', dur: '1h 10min', price: 132500},
+            {id: 3, dep: '13:45', arr: '14:55', dur: '1h 10min', price: 129800},
+            {id: 4, dep: '17:20', arr: '18:30', dur: '1h 10min', price: 138900}
+        ];
+
+        setTimeout(() => {
+            const container = document.getElementById('flights-container');
+            container.innerHTML = '';
+            
+            flights.forEach(f => {
+                container.innerHTML += `
+                    <div class="flight-card">
+                        <div class="flight-header">
+                            <span><b>Avianca AV80${f.id}2</b></span>
+                            ${f.best ? '<span class="best-price">Mejor precio</span>' : ''}
+                        </div>
+                        <div class="flight-info">
+                            <div>
+                                <div class="time">${f.dep}</div>
+                                <div class="airport">${data.origin || 'Origen'}</div>
+                            </div>
+                            <div class="flight-duration">
+                                <div>${f.dur}</div>
+                                <div class="duration-line"></div>
+                                <div class="stops">Directo</div>
+                            </div>
+                            <div style="text-align:right">
+                                <div class="time">${f.arr}</div>
+                                <div class="airport">${data.destination || 'Destino'}</div>
+                            </div>
+                        </div>
+                        <div class="price-options">
+                            <div class="price-option">
+                                <div class="cabin-class">Economy</div>
+                                <div class="price">COP ${f.price.toLocaleString()}</div>
+                                <div style="font-size:0.8rem;color:#666;margin:0.5rem 0">por persona</div>
+                                <button class="select-btn" onclick="alert('¡Vuelo seleccionado!\\nVuelo: AV80${f.id}2\\nPrecio: COP ${f.price.toLocaleString()}')">Seleccionar</button>
+                            </div>
+                            <div class="price-option" style="border-color:#4caf50">
+                                <div style="background:#4caf50;color:#fff;padding:0.2rem;border-radius:10px;font-size:0.75rem;margin-bottom:0.5rem">Recomendado</div>
+                                <div class="cabin-class">Economy Flex</div>
+                                <div class="price">COP ${Math.round(f.price * 1.26).toLocaleString()}</div>
+                                <div style="font-size:0.8rem;color:#666;margin:0.5rem 0">por persona</div>
+                                <button class="select-btn" onclick="alert('¡Vuelo seleccionado!\\nVuelo: AV80${f.id}2 Flex\\nPrecio: COP ${Math.round(f.price * 1.26).toLocaleString()}')">Seleccionar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }, 1500);
+    </script>
+</body>
+</html>
